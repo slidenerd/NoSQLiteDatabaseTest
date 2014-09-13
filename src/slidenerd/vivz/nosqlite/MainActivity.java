@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.activeandroid.query.Select;
 
 import slidenerd.vivz.model.Person;
+import slidenerd.vivz.model.Score;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,12 +20,22 @@ public class MainActivity extends ActionBarActivity {
     EditText personNameEditText;
     EditText personAgeEditText;
 
+    EditText scorePhysics;
+    EditText scoreChemistry;
+    EditText scoreMaths;
+    EditText scoreBiology;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         personNameEditText = (EditText) findViewById(R.id.person_name);
         personAgeEditText = (EditText) findViewById(R.id.person_age);
+
+        scorePhysics = (EditText) findViewById(R.id.score_physics);
+        scoreChemistry = (EditText) findViewById(R.id.score_chemistry);
+        scoreMaths = (EditText) findViewById(R.id.score_maths);
+        scoreBiology = (EditText) findViewById(R.id.score_biology);
     }
 
     @Override
@@ -48,10 +59,25 @@ public class MainActivity extends ActionBarActivity {
 
     public void save(View view)
     {
+
+        // Create a new score object with the 4 peices of data extracted from
+        // their respective EditText and converted to an Integer
+        Score score = new Score(
+                Integer.parseInt(scorePhysics.getText().toString())
+                , Integer.parseInt(scoreChemistry.getText().toString())
+                , Integer.parseInt(scoreMaths.getText().toString())
+                , Integer.parseInt(scoreBiology.getText().toString()));
+
+        // Save the score object to its own table first.
+        score.save();
+
         String name = personNameEditText.getText().toString();
         int age = Integer.parseInt(personAgeEditText.getText().toString());
 
-        Person person = new Person(name, age);
+        // Create a Person object with its details and the score object
+        Person person = new Person(name, age, score);
+
+        // Save the Person object
         person.save();
     }
 
@@ -78,6 +104,11 @@ public class MainActivity extends ActionBarActivity {
                     .append(person.personName)
                     .append(" Age: ")
                     .append(person.personAge)
+                    // Notice how score object is appended to a String here to
+                    // display it which is why we defined a toString() method
+                    // inside the Score class
+                    .append(" Score: ")
+                    .append(person.personScore)
                     .append("\n");
         }
 
