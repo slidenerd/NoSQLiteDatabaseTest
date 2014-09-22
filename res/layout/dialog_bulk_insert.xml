@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F62459"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin" >
+
+    <LinearLayout
+        android:id="@+id/linear_layout_bulk_insert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <!-- The button used to add a new student row of UI controls on the screen -->
+
+        <Button
+            android:id="@+id/new_student"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/custom_selector_button"
+            android:padding="8dp"
+            android:text="New Student"
+            android:textColor="#FFF" />
+
+        <!-- The button used to add all the rows to the database with as bulk insert operation -->
+        <Button
+            android:id="@+id/add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/custom_selector_button"
+            android:padding="8dp"
+            android:text="Add"
+            android:textColor="#FFF"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</ScrollView>
