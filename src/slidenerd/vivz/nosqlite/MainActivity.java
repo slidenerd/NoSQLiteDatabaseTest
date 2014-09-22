@@ -8,34 +8,24 @@ import com.activeandroid.query.Select;
 import slidenerd.vivz.model.Person;
 import slidenerd.vivz.model.Score;
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
-    EditText personNameEditText;
-    EditText personAgeEditText;
-
-    EditText scorePhysics;
-    EditText scoreChemistry;
-    EditText scoreMaths;
-    EditText scoreBiology;
+    public static final String EXTRA_ALL = "slidenerd.vivz.nosqlite.extra.all";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        personNameEditText = (EditText) findViewById(R.id.person_name);
-        personAgeEditText = (EditText) findViewById(R.id.person_age);
 
-        scorePhysics = (EditText) findViewById(R.id.score_physics);
-        scoreChemistry = (EditText) findViewById(R.id.score_chemistry);
-        scoreMaths = (EditText) findViewById(R.id.score_maths);
-        scoreBiology = (EditText) findViewById(R.id.score_biology);
     }
 
     @Override
@@ -57,35 +47,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void save(View view)
-    {
-
-        // Create a new score object with the 4 peices of data extracted from
-        // their respective EditText and converted to an Integer
-        Score score = new Score(
-                Integer.parseInt(scorePhysics.getText().toString())
-                , Integer.parseInt(scoreChemistry.getText().toString())
-                , Integer.parseInt(scoreMaths.getText().toString())
-                , Integer.parseInt(scoreBiology.getText().toString()));
-
-        // Save the score object to its own table first.
-        score.save();
-
-        String name = personNameEditText.getText().toString();
-        int age = Integer.parseInt(personAgeEditText.getText().toString());
-
-        // Create a Person object with its details and the score object
-        Person person = new Person(name, age, score);
-
-        // Save the Person object
-        person.save();
-    }
-
     public void showAll(View view)
     {
         // Create an object of Select to issue a select query
-
-        Select select = new Select();
 
         // Call select.all() to select all rows from our table which is
         // represented by Person.class and execute the query.
@@ -93,26 +57,30 @@ public class MainActivity extends ActionBarActivity {
         // It returns an ArrayList of our Person objects where each object
         // contains data corresponding to a row of our database.
 
-        ArrayList<Person> people = select.all().from(Person.class).execute();
-
-        // Iterate through the ArrayList to get all our data. We ll simply add
-        // all the data to our StringBuilder to display it inside a Toast.
-
-        StringBuilder builder = new StringBuilder();
-        for (Person person : people) {
-            builder.append("Name: ")
-                    .append(person.personName)
-                    .append(" Age: ")
-                    .append(person.personAge)
-                    // Notice how score object is appended to a String here to
-                    // display it which is why we defined a toString() method
-                    // inside the Score class
-                    .append(" Score: ")
-                    .append(person.personScore)
-                    .append("\n");
-        }
-
-        Toast.makeText(this, builder.toString(), Toast.LENGTH_LONG).show();
-
+        ArrayList<Person> people = new Select()
+                .all()
+                .from(Person.class)
+                .execute();
+        Intent intentShowAll = new Intent(this, DisplayAllActivity.class);
+        intentShowAll.putExtra(EXTRA_ALL, people);
+        startActivity(intentShowAll);
     }
+
+    public void insert(View view)
+    {
+        DialogInsert dialogInsert = new DialogInsert();
+        dialogInsert.show(getSupportFragmentManager(), "DialogInsert");
+    }
+
+    public void bulkInsert(View view)
+    {
+        DialogBulkInsert dialogBulkInsert = new DialogBulkInsert();
+        dialogBulkInsert.show(getSupportFragmentManager(), "DialogBulkInsert");
+    }
+
+    public void selectUpdateDelete(View view) {
+        Intent intent = new Intent(this, SelectDeleteActivity.class);
+        startActivity(intent);
+    }
+
 }

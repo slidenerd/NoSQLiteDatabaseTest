@@ -10,95 +10,44 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="slidenerd.vivz.nosqlite.MainActivity" >
 
-    <EditText
-        android:id="@+id/person_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/custom_bg_edit_text"
-        android:ems="10"
-        android:hint="Your Name..."
-        android:textColor="#f39c12" >
-
-        <requestFocus />
-    </EditText>
-
-    <EditText
-        android:id="@+id/person_age"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/custom_bg_edit_text"
-        android:ems="10"
-        android:hint="Your Age..."
-        android:inputType="numberSigned"
-        android:textColor="#f39c12" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="4" >
-
-        <EditText
-            android:id="@+id/score_physics"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/custom_bg_edit_text"
-            android:hint="P" />
-
-        <EditText
-            android:id="@+id/score_chemistry"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="3dp"
-            android:layout_weight="1"
-            android:background="@drawable/custom_bg_edit_text"
-            android:hint="C" />
-
-        <EditText
-            android:id="@+id/score_maths"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="6dp"
-            android:layout_weight="1"
-            android:background="@drawable/custom_bg_edit_text"
-            android:hint="M" />
-
-        <EditText
-            android:id="@+id/score_biology"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/custom_bg_edit_text"
-            android:hint="B" />
-    </LinearLayout>
-
     <Button
-        android:id="@+id/save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/custom_selector_button"
-        android:onClick="save"
-        android:text="Save"
-        android:textColor="#FFF" />
-
-    <Button
-        android:id="@+id/show_all"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/custom_selector_button"
         android:onClick="showAll"
-        android:text="Show All"
+        android:text="Show All or Update"
+        android:textColor="#FFF" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_selector_button"
+        android:onClick="insert"
+        android:text="Insert"
+        android:textColor="#FFF" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_selector_button"
+        android:onClick="bulkInsert"
+        android:text="Bulk Insert"
+        android:textColor="#FFF" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_selector_button"
+        android:onClick="selectUpdateDelete"
+        android:text="Select or Delete"
         android:textColor="#FFF" />
 
 </LinearLayout>

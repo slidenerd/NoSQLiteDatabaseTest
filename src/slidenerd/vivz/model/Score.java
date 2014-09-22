@@ -1,12 +1,14 @@
 
 package slidenerd.vivz.model;
 
+import java.io.Serializable;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 @Table(name = "Score")
-public class Score extends Model {
+public class Score extends Model implements Serializable{
     @Column(name = "scorePhysics")
     public int scorePhysics;
     @Column(name = "scoreChemistry")
