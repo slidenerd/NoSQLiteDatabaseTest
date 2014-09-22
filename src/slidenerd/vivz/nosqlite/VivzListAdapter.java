@@ -30,7 +30,7 @@ public class VivzListAdapter extends BaseAdapter {
     public void setData(ArrayList<Person> data)
     {
         this.mData = data;
-        if (data != null && !data.isEmpty()) {
+        if (data != null) {
             notifyDataSetChanged();
         }
     }

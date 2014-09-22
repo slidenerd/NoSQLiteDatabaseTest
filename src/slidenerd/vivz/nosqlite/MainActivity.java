@@ -10,6 +10,7 @@ import slidenerd.vivz.model.Score;
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,20 +50,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void showAll(View view)
     {
-        // Create an object of Select to issue a select query
-
-        // Call select.all() to select all rows from our table which is
-        // represented by Person.class and execute the query.
-
-        // It returns an ArrayList of our Person objects where each object
-        // contains data corresponding to a row of our database.
-
-        ArrayList<Person> people = new Select()
-                .all()
-                .from(Person.class)
-                .execute();
-        Intent intentShowAll = new Intent(this, DisplayAllActivity.class);
-        intentShowAll.putExtra(EXTRA_ALL, people);
+        Intent intentShowAll = new Intent(this, ShowAllActivity.class);
         startActivity(intentShowAll);
     }
 

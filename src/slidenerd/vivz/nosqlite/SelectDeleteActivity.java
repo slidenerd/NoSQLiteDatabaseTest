@@ -2,6 +2,7 @@
 package slidenerd.vivz.nosqlite;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import slidenerd.vivz.model.Person;
 import slidenerd.vivz.model.Score;
@@ -58,7 +59,7 @@ public class SelectDeleteActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_delete_update);
+        setContentView(R.layout.activity_select_delete);
         mListData = (ListView) findViewById(R.id.list_data);
         mAdapter = new VivzListAdapter(this);
         mListData.setAdapter(mAdapter);
@@ -81,11 +82,10 @@ public class SelectDeleteActivity extends Activity
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
-
         switch (v.getId()) {
             case R.id.select:
                 ArrayList<Person> people = select(buildQuery());
-                if (people != null && people.size() > 0) {
+                if (people != null) {
                     mAdapter.setData(people);
                 }
                 break;
@@ -96,14 +96,14 @@ public class SelectDeleteActivity extends Activity
 
     }
 
-    private String getPersonName()
+    private String extractPersonName()
     {
         return mEditTextPersonName
                 .getText()
                 .toString();
     }
 
-    private int getPersonAge() {
+    private int extractPersonAge() {
         int personAge = 0;
         try {
             personAge = Integer.parseInt(
@@ -116,7 +116,7 @@ public class SelectDeleteActivity extends Activity
         return personAge;
     }
 
-    private int getScoreFrom(EditText editText) {
+    private int extractScoreFrom(EditText editText) {
         int score = -1;
         try {
             score = Integer.parseInt(
@@ -131,12 +131,12 @@ public class SelectDeleteActivity extends Activity
 
     public Query buildQuery() {
         String and = "and ".intern();
-        String personName = getPersonName();
-        int personAge = getPersonAge();
-        int scorePhysics = getScoreFrom(mScorePhysics);
-        int scoreChemistry = getScoreFrom(mScoreChemistry);
-        int scoreMaths = getScoreFrom(mScoreMaths);
-        int scoreBiology = getScoreFrom(mScoreBiology);
+        String personName = extractPersonName();
+        int personAge = extractPersonAge();
+        int scorePhysics = extractScoreFrom(mScorePhysics);
+        int scoreChemistry = extractScoreFrom(mScoreChemistry);
+        int scoreMaths = extractScoreFrom(mScoreMaths);
+        int scoreBiology = extractScoreFrom(mScoreBiology);
 
         StringBuilder queryForPerson = new StringBuilder();
         ArrayList<String> queryArgumentsForPerson = new ArrayList<>();
@@ -208,12 +208,18 @@ public class SelectDeleteActivity extends Activity
                     .where(query.queryForScore,
                             query.queryArgumentsForScore.toArray())
                     .execute();
-            for (Score score : scores)
+            boolean matchFound = false;
+            for (Iterator<Person> outsideIterator = people.iterator(); outsideIterator.hasNext();)
             {
-                for (Person person : people) {
-                    if (person.personScore.getId() != score.getId()) {
-                        people.remove(person);
+                Person person = outsideIterator.next();
+                matchFound = false;
+                for (Score score : scores) {
+                    if (person.personScore.getId() == score.getId()) {
+                        matchFound = true;
                     }
+                }
+                if (!matchFound) {
+                    outsideIterator.remove();
                 }
 
             }
@@ -233,18 +239,28 @@ public class SelectDeleteActivity extends Activity
         }
         else if (query.queryForPerson.length() == 0
                 && query.queryForScore.length() > 0) {
-            ArrayList<Person> people = new ArrayList<>();
+            ArrayList<Person> people = new Select()
+                    .all()
+                    .from(Person.class)
+                    .execute();
             ArrayList<Score> scores = new Select()
                     .from(Score.class)
                     .where(query.queryForScore,
                             query.queryArgumentsForScore.toArray())
                     .execute();
-            for (Score score : scores) {
-                ArrayList<Person> current = new Select()
-                        .from(Person.class)
-                        .where("Id=?", score.getId())
-                        .execute();
-                people.addAll(current);
+            boolean matchFound = false;
+            for (Iterator<Person> outsideIterator = people.iterator(); outsideIterator.hasNext();) {
+
+                Person person = outsideIterator.next();
+                matchFound = false;
+                for (Score score : scores) {
+                    if (person.personScore.getId() == score.getId()) {
+                        matchFound = true;
+                    }
+                }
+                if (!matchFound) {
+                    outsideIterator.remove();
+                }
             }
             return people;
         }

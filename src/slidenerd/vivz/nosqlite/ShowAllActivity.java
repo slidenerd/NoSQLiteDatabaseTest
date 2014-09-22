@@ -2,6 +2,7 @@
 package slidenerd.vivz.nosqlite;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.activeandroid.query.Select;
 
@@ -23,7 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DisplayAllActivity extends Activity
+public class ShowAllActivity extends Activity
         implements OnItemClickListener, OnClickListener {
 
     /**
@@ -42,12 +43,6 @@ public class DisplayAllActivity extends Activity
      */
     private TextView mTextEmptyList;
     private LayoutInflater mInflater;
-
-    /**
-     * The View object containing a reference to a layout file which displays
-     * the Update Dialog when A ListItem is clicked
-     */
-    private View mDialogUpdateView;
 
     /**
      * The EditText containing Data when the user tries to perform a update
@@ -69,30 +64,20 @@ public class DisplayAllActivity extends Activity
         mListAll = (ListView) findViewById(R.id.list_all);
         mTextEmptyList = (TextView) findViewById(R.id.list_empty_message);
         mInflater = LayoutInflater.from(this);
-        mDialogUpdateView = mInflater.inflate(R.layout.dialog_insert, null);
-
-        // Get the Intent that was responsible to launch this Activity.
-        Intent intentCaller = getIntent();
-
-        // Get the data from this Intent which contains a list of Person objects
-        // to be displayed inside this ListView
-        initListWithData(intentCaller);
-
-        // Initialize the 'Update Dialog' View
-        initDialog(mDialogUpdateView);
+        initListWithData();
     }
 
-    private void initListWithData(Intent intent) {
-        if (intent != null) {
-            ArrayList<Person> people = (ArrayList<Person>) intent
-                    .getSerializableExtra(MainActivity.EXTRA_ALL);
-            mAdapter = new VivzListAdapter(this);
-            mAdapter.setData(people);
-            mListAll.setAdapter(mAdapter);
-            mListAll.setEmptyView(mTextEmptyList);
-            mListAll.setOnItemClickListener(this);
+    private void initListWithData() {
+        ArrayList<Person> people = new Select()
+                .all()
+                .from(Person.class)
+                .execute();
+        mAdapter = new VivzListAdapter(this);
+        mAdapter.setData(people);
+        mListAll.setAdapter(mAdapter);
+        mListAll.setEmptyView(mTextEmptyList);
+        mListAll.setOnItemClickListener(this);
 
-        }
     }
 
     private void initDialog(View view) {
@@ -131,10 +116,12 @@ public class DisplayAllActivity extends Activity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO Auto-generated method stub
-        Person person = getDataFromView(view);
+        Person person = mAdapter.getItem(position);
 
         if (person != null) {
-            AlertDialog dialog = showDialog();
+            View dialogView = mInflater.inflate(R.layout.dialog_insert, null);
+            initDialog(dialogView);
+            AlertDialog dialog = showDialog(dialogView);
             setValuesUpdateDialog(person);
             mButtonSave.setTag(R.id.object_person, person);
             mButtonSave.setTag(R.id.object_dialog, dialog);
@@ -142,79 +129,10 @@ public class DisplayAllActivity extends Activity
         }
     }
 
-    /**
-     * Extract data from the currently selected row of the ListView and convert
-     * this data into a Person object for further processing.
-     * 
-     * @param view
-     * @return
-     */
-    public Person getDataFromView(View view) {
-        String personName = ((TextView) view
-                .findViewById(R.id.text_name_value))
-                .getText()
-                .toString();
-        int personAge = Integer
-                .parseInt(((TextView) view
-                        .findViewById(R.id.text_age_value))
-                        .getText()
-                        .toString());
-        int scorePhysics = Integer
-                .parseInt(((TextView) view
-                        .findViewById(R.id.text_physics_value))
-                        .getText()
-                        .toString());
-        int scoreChemistry = Integer
-                .parseInt(((TextView) view
-                        .findViewById(R.id.text_chemistry_value))
-                        .getText()
-                        .toString());
-        int scoreMaths = Integer
-                .parseInt(((TextView) view
-                        .findViewById(R.id.text_maths_value))
-                        .getText()
-                        .toString());
-        int scoreBiology = Integer
-                .parseInt(((TextView) view
-                        .findViewById(R.id.text_biology_value))
-                        .getText()
-                        .toString());
-
-        ArrayList<Score> scores = new Select("Id")
-                .from(Score.class)
-                .where("scorePhysics=? "
-                        + "AND scoreChemistry=? "
-                        + "AND scoreMaths=? "
-                        + "AND scoreBiology=?",
-                        scorePhysics,
-                        scoreChemistry,
-                        scoreMaths,
-                        scoreBiology)
-                .execute();
-        ArrayList<Person> people = new Select()
-                .from(Person.class)
-                .where("personName=? "
-                        + "AND personAge=?",
-                        personName,
-                        personAge)
-                .execute();
-        for (Score score : scores) {
-            for (Person person : people) {
-                if (person.personScore.getId() != score.getId()) {
-                    people.remove(person);
-                }
-            }
-        }
-        return people != null
-                && people.size() > 0
-                ? people.get(0)
-                : null;
-    }
-
-    public AlertDialog showDialog() {
+    public AlertDialog showDialog(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCustomTitle(null)
-                .setView(mDialogUpdateView);
+                .setView(view);
         return builder.show();
     }
 
@@ -255,7 +173,7 @@ public class DisplayAllActivity extends Activity
                             dialog.dismiss();
                         }
                         mAdapter.notifyDataSetChanged();
-                        
+
                     }
 
                     catch (NumberFormatException e) {

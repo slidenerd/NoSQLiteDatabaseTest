@@ -355,7 +355,7 @@ int layout abc_search_dropdown_item_icons_2line 0x7f030015
 int layout abc_search_view 0x7f030016
 int layout abc_simple_decor 0x7f030017
 int layout activity_main 0x7f030018
-int layout activity_select_delete_update 0x7f030019
+int layout activity_select_delete 0x7f030019
 int layout activity_show_all 0x7f03001a
 int layout custom_list_item 0x7f03001b
 int layout dialog_bulk_insert 0x7f03001c

@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DisplayAllActivity"
+            android:name=".ShowAllActivity"
             android:label="@string/title_activity_show_all" >
         </activity>
         <activity
